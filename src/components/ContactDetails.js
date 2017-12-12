@@ -12,10 +12,23 @@ export default class ContactDetails extends React.Component {
         }
 
         this.handleToggle = this.handleToggle.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleEdit = this.handleEdit.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
+        
     }
 
     handleToggle() {
         //setState함수는 비동기 이다.
+
+        if(!this.state.isEdit) {
+            this.setState({
+                name: this.props.contact.name,
+                phone: this.props.contact.phone
+            });
+        }else {
+            this.handleEdit();
+        }
         this.setState({
             isEdit: !this.state.isEdit
         });
@@ -27,6 +40,16 @@ export default class ContactDetails extends React.Component {
         let nextState = {};
         nextState[e.target.name] = e.target.value;
         this.setState(nextState);
+    }
+
+    handleEdit() {
+        this.props.onEdit(this.state.name, this.state.phone);
+    }
+
+    handleKeyPress(e) {
+        if(e.charCode === 13) {
+            this.handleToggle();
+        }
     }
 
     render() {
@@ -84,5 +107,7 @@ ContactDetails.defaultProps = {
         name: '',
         phone: ''
     },
-    onRemove: () => {console.log('onRemove not defined');}
+    onRemove: () => {console.log('onRemove not defined');},
+    onEdit: () => {console.log('onEdit not defined');}
 }
+

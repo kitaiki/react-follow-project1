@@ -40,6 +40,24 @@ export default class Contact extends React.Component {
         this.handleEdit = this.handleEdit.bind(this);
     }
 
+    //컴포넌트가 DOM 위에 만들어지기 전
+    componentWillMount() {
+        const contactData = localStorage.contactData;
+
+        if(contactData) {
+            this.setState({
+                contactData: JSON.parse(contactData)
+            })
+        }
+    }
+
+    //컴포넌트가 리렌더링을 마친 후
+    componentDidUpdate(prevProps, prevState) {
+        if(JSON.stringify(prevState.contactData) != JSON.stringify(this.state.contactData)) {
+            localStorage.contactData = JSON.stringify(this.state.contactData);
+        }
+    }
+
     handleCreate(_contact) {
         this.setState({
             contactData: update(this.state.contactData, {$push: [_contact]})
@@ -63,8 +81,8 @@ export default class Contact extends React.Component {
             contactData: update(this.state.contactData,
             {
                 [this.state.selectedKey]: {
-                    name: {$set: _name},
-                    phone: {$set, _phone}
+                    name: { $set: _name },
+                    phone: { $set: _phone }
                 }
             })
         })
@@ -112,6 +130,7 @@ export default class Contact extends React.Component {
                     isSelected={this.state.selectedKey != -1}
                     contact = {this.state.contactData[this.state.selectedKey]}
                     onRemove={this.handleRemove}
+                    onEdit={this.handleEdit}
                 />
 
                 <ContactCreate
